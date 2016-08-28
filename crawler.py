@@ -16,28 +16,27 @@ while True:
     print "fetch: " , url.format(page = page)
     response = requests.get(url.format(page=page))
     html = BeautifulSoup(response.text,"lxml")
-    house_list = html.select('a[class="href"]')
-    for link in house_list:
-        print link
-    #print(html.prettify())
-    #house_list = html.select("tbody>tr")
+    #house_list = html.select('a[class="href"]')
+    house_list = html.findAll("td",{"class":"t"})
     #循环在读不到新的房源时结束
     if page == 2 :
         if not house_list:
             break
     for house in house_list:
-        house_title = house.select("h2")[0].string.encode("utf-8")
+        house_title = house.select("a")[0]["href"]
         house_url = urljoin(url,house.select("a")[0]["href"])
+        print house_url
         house_info_list = house_title.split()
         # 如果第二列是公寓名则取第一列作为地址
+        '''
         if "公寓" in house_info_list[1] or "青年社区" in house_info_list[1]:
             house_location = house_info_list[0]
         else:
             house_location = house_info_list[1]
         house_money = house.select(".money")[0].select("b")[0].string.encode("utf-8")
         csv_writer.writerow([house_title,house_location,house_money,house_url])
-
 '''
+        '''
 url = "http://bj.58.com/pinpaigongyu/pn/{page}/?minprice=2000_4000"
 #已完成的页数序号，初时为0
 page = 0
